@@ -3,14 +3,28 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <!-- Fragmento de autocompletado de Google Places -->
-    <fragment
-        android:id="@+id/autocomplete_fragment"
+    <!-- Campos para ingresar latitud y longitud -->
+    <EditText
+        android:id="@+id/latEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
+        android:hint="Ingrese Latitud" />
+
+    <EditText
+        android:id="@+id/lngEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Inigrese Longitud" />
+
+    <!-- Botón para buscar la ubicación -->
+    <Button
+        android:id="@+id/btnSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Buscar" />
 
     <!-- Fragmento del mapa -->
     <fragment

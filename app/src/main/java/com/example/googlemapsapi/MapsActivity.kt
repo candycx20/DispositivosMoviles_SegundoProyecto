@@ -2,6 +2,8 @@ package com.example.googlemapsapi
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.example.googlemapsapi.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -25,7 +27,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
 
         // Inicializa la API de Google Places
-        Places.initialize(applicationContext, "AIzaSyBpxVtx4_SXgamC12QNHczRqARanmXXQRk")
+        Places.initialize(applicationContext, "TU_GOOGLE_MAPS_API_KEY")
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -35,29 +37,25 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        // Inicializa el AutocompleteSupportFragment
-        val autocompleteFragment = supportFragmentManager
-            .findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment
 
-        // Especifica los tipos de datos del lugar que deseas obtener
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
+        // Botón de búsqueda por coordenadas (latitud y longitud)
+        val latEditText: EditText = findViewById(R.id.latEditText)
+        val lngEditText: EditText = findViewById(R.id.lngEditText)
+        val btnSearch: Button = findViewById(R.id.btnSearch)
 
-        // Configura el PlaceSelectionListener
-        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-            override fun onPlaceSelected(place: Place) {
-                // Cuando un lugar es seleccionado, mueve la cámara y coloca un marcador en el mapa
-                Log.i("MapsActivity", "Place: ${place.name}, ${place.id}")
-                val latLng = place.latLng
-                if (latLng != null) {
-                    mMap.addMarker(MarkerOptions().position(latLng).title(place.name))
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12f))
-                }
+        btnSearch.setOnClickListener {
+            val lat = latEditText.text.toString().toDoubleOrNull()
+            val lng = lngEditText.text.toString().toDoubleOrNull()
+
+            if (lat != null && lng != null) {
+                val latLng = LatLng(lat, lng)
+                mMap.addMarker(MarkerOptions().position(latLng).title("Marker at (${lat}, ${lng})"))
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12f))
+            } else {
+                // Manejar el caso donde las coordenadas no son válidas
+                Log.e("MapsActivity", "Invalid coordinates")
             }
-
-            override fun onError(status: Status) {
-                Log.i("MapsActivity", "An error occurred: $status")
-            }
-        })
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
